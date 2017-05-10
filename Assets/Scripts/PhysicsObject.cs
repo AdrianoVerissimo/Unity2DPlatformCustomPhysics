@@ -8,6 +8,8 @@ public class PhysicsObject : MonoBehaviour
 
 	public float gravityModifier = 1f; //valor utilizado para modificar a gravidade padrão da Physics2D
 
+	protected Vector2 targetVelocity; //velocidade horizontal
+
 	protected bool grounded;
 	protected Vector2 groundNormal;
 
@@ -46,16 +48,23 @@ public class PhysicsObject : MonoBehaviour
 	{
 		//atribui uma velocidade baseando-se na gravidade e modificador de gravidade
 		velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+		velocity.x = targetVelocity.x;
 
 		grounded = false; //sempre reseta definindo que o objeto não está no chão
 
 		//determina a próxima posição do objeto após a determinação da velocidade
 		Vector2 deltaPosition = velocity * Time.deltaTime;
 
-		//determina a nova movimentação vertical
-		Vector2 move = Vector2.up * deltaPosition.y;
+		//vetor responsável para mover pelo chão.
+		//groundNormal.x possui seu valor negativo para inverter o lado aonde a coordenada X da linha normal está apontando.
+		Vector2 moveAlongGround = new Vector2 (groundNormal.y, -groundNormal.x);
 
-		//atualiza posição
+		//determina a movimentação horizontal
+		Vector2 move = moveAlongGround * deltaPosition.x;
+		Movement (move, false);
+
+		//determina a nova movimentação vertical
+		move = Vector2.up * deltaPosition.y;
 		Movement (move, true);
 	}
 
