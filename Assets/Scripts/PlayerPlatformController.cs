@@ -7,9 +7,13 @@ public class PlayerPlatformController : PhysicsObject {
 	public float maxSpeed = 7f;
 	public float jumpTakeOffSpeed = 7f;
 
+	private SpriteRenderer spriteRenderer;
+	private Animator animator;
+
 	// Use this for initialization
-	void Start () {
-		
+	void Awake () {
+		spriteRenderer = GetComponent<SpriteRenderer> ();
+		animator = GetComponent<Animator> ();
 	}
 
 	//substitui o método responsável por calcular a velocidade do objeto
@@ -33,6 +37,17 @@ public class PlayerPlatformController : PhysicsObject {
 				velocity.y = velocity.y * .5f;
 			}
 		}
+
+		//verifica quando espelhar a imagem horizontalmente
+		bool flipSprite = (spriteRenderer.flipX ? (move.x > 0.01f) : (move.x < 0.01f) );
+		if (flipSprite)
+		{
+			spriteRenderer.flipX = !spriteRenderer.flipX;
+		}
+
+		animator.SetBool ("grounded", grounded); //ativa a animação de personagem parado se estiver no chão
+
+		animator.SetFloat ("velocityX", Mathf.Abs(velocity.x) / maxSpeed); //ativa a animação de andar caso esteja se movendo horizontalmente
 
 		//faz a movimentação ocorrer
 		targetVelocity = move * maxSpeed;
