@@ -40,8 +40,16 @@ public class PhysicsObject : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+	{
+		targetVelocity = Vector2.zero;
+		ComputeVelocity ();
+	}
+
+	//método utilizado para calcular a velocidade do objeto e ser substituído
+	protected virtual void ComputeVelocity()
+	{
+
 	}
 
 	void FixedUpdate()
